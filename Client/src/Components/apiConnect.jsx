@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
-import { generateKeyPair } from 'crypto';
+import UserDisplay from './userDisplay';
 import axios from 'axios';
 
 const discoveryDocs = [ 'https://people.googleapis.com/$discovery/rest?version=v1' ];
 const scopes = 'https://www.googleapis.com/auth/youtube.readonly';
 const defaultChannel = 'alexxww';
-const apiKey = 'your_api_key';
+const apiKey = 'AIzaSyAiekQd1zCztDr6vEsW5bYIYT26MmFJ5i8';
 
-export default class Youtube extends Component {
+export default class youtube extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			videos: [],
 			isLogged: false,
+			isLoaded: false,
 			input: ''
 		};
 		this.handleAuthClick = this.handleAuthClick.bind(this);
 		this.handleSignoutClick = this.handleSignoutClick.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 	}
 
-	componentDidMount() {
+	componentDidMount(e) {
 		this.initClient();
 	}
 
@@ -28,14 +30,13 @@ export default class Youtube extends Component {
 		window.gapi.load('client:auth2', () => {
 			window.gapi.client
 				.init({
-					clientId: 'YOUR_clientID.apps.googleusercontent.com',
+					clientId: '568890925993-1vgd0a6g7iabongc0l0s6d1jrq14g8ps.apps.googleusercontent.com',
 					discoveryDocs: discoveryDocs,
 					scope: scopes
 				})
 				.then(() => {
 					// SIGN IN INSTANCE
 					window.gapi.auth2.getAuthInstance().isSignedIn.get();
-					this.loadClient();
 				})
 				.catch((err) => console.log('ERROR DURING INIT CLIENT', err));
 		});
@@ -55,13 +56,31 @@ export default class Youtube extends Component {
 
 	//CLICK LOGIN BUTTON, INIT SIGN IN INSTANCE
 	handleAuthClick(event) {
-		const { isLogged } = this.state;
+		const { isLogged, input, userData, isLoaded } = this.state;
 		event.preventDefault();
-		this.setState({ isLogged: !this.state.isLogged });
-		window.gapi.auth2.getAuthInstance().signIn().then(console.log('User connected'));
-		fetch('https://www.googleapis.com/youtube/v3/channelschannels?part=contentDetails&mine=true')
-			.then((res) => console.log('resp', res))
-			.catch((err) => console.log('axios ERROR', err));
+		window.gapi.auth2.getAuthInstance().signIn().then(() => {
+			this.loadClient();
+			console.log('User connected');
+			window.gapi.client
+				.request({
+					method: 'GET',
+					path: '/youtube/v3/channels',
+					params: {
+						part: 'snippet,contentDetails,statistics,id ',
+						mine: 'true'
+					}
+				})
+				.then((res) => {
+					let userData = res.result.items[0];
+					this.setState({ userData, isLogged: !isLogged });
+					if (this.state.isLogged && userData !== undefined) {
+						console.log('COUCOU');
+						this.getPlaylist();
+					}
+					console.log('myData', userData);
+				})
+				.catch((err) => console.log('get Channel err', err));
+		});
 	}
 
 	//CLICK LOGOUT BUTTON, BREAK THE INSTANCE
@@ -71,15 +90,40 @@ export default class Youtube extends Component {
 		this.setState({ isLogged: false });
 	}
 
-	//CALL THE API LINK INTO INDEX.HTML
-	getChannel(channel) {
-		window.gapi.client.youtube.channels
+	//SEARCH FOR VIDEO OR USER
+	getVideos(videos) {
+		let newChanVid = videos.toLowerCase();
+		return window.gapi.client.youtube.search
 			.list({
-				part: 'snippet,contentDetails,statistics',
-				mine: true
+				part: 'snippet',
+				maxResults: 25,
+				q: newChanVid
 			})
-			.then((res) => console.log('resp', res))
-			.catch((err) => console.log('get Channel err', err));
+			.then((res) => {
+				console.log('res', res);
+				let videoData = res.result.items;
+				this.setState({ videoData });
+				console.log('videoData', videoData);
+			})
+			.catch((err) => console.log('No video found', err));
+	}
+
+	getPlaylist(playlist) {
+		playlist = this.state.userData.contentDetails.relatedPlaylists.uploads;
+		if (this.state.isLogged) {
+			return window.gapi.client.youtube.playlistItems
+				.list({
+					part: 'snippet',
+					playlistId: playlist,
+					maxResults: 10
+				})
+				.then((res) => {
+					let newPlaylist = res.result.items;
+					this.setState([ newPlaylist ]);
+					console.log('playlist', newPlaylist);
+				})
+				.catch((err) => console.log("Can't find playlist", err));
+		}
 	}
 
 	handleChange(e) {
@@ -88,28 +132,48 @@ export default class Youtube extends Component {
 		this.setState({ [e.target.name]: value });
 	}
 	handleSubmit(e) {
-		const { input } = this.state;
 		e.preventDefault();
-		this.getChannel(input);
+		const { input } = this.state;
 		this.setState({ input });
+		this.getVideos(input);
+		//this.getChannel(input);
+		console.log('input', input);
 	}
 
 	render() {
-		const { isLogged, input } = this.state;
+		const { isLogged, input, userData, videoData, newPlaylist } = this.state;
 		const { handleSignoutClick, handleAuthClick, handleChange, handleSubmit } = this;
-		console.log('props', this.props);
+		console.log('IsLOGGED ?', isLogged);
+		console.log('playlist', newPlaylist);
+
+		if (newPlaylist !== undefined) {
+			return this.getPlaylist();
+		}
+
 		return (
 			<div>
 				{isLogged === true ? (
-					<div>
-						<input name={input} onChange={handleChange.bind(this)} />
-						<button name="submit" onSubmit={handleSubmit.bind(this)}>
-							Search Channel
-						</button>
-						<button onClick={handleSignoutClick}>Sign Out</button>
+					<div className="button-searchBar">
+						<UserDisplay
+							userData={userData}
+							videoData={videoData}
+							handleSignoutClick={handleSignoutClick}
+							handleChange={handleChange}
+							input={input}
+							handleSubmit={handleSubmit}
+							playlist={newPlaylist}
+						/>
 					</div>
 				) : (
-					<button onClick={handleAuthClick}> Sign In</button>
+					<div className="btn1">
+						<ul>
+							Please Log you in with google
+							<br />
+							<button className="btn btn-danger" onClick={handleAuthClick}>
+								Sign In
+							</button>
+						</ul>
+					</div>
 				)}
 			</div>
 		);

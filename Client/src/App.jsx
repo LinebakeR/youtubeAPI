@@ -9,7 +9,7 @@ import navbar from './Components/navbar';
 function App() {
 	return (
 		<Router>
-			<Navbar />
+			<Route path="/" render={(props) => <Navbar {...props} apiConnect={apiConnect} />} />
 			<Route exact path="/" component={apiConnect} />
 		</Router>
 	);
