@@ -27,14 +27,17 @@ export default class UserDisplay extends Component {
 	handleSubmit(e) {
 		e.preventDefault();
 		this.setState({ library: this.state.input, isEdit: false });
+		if (this.state.input === '') {
+			this.setState({ library: 'My library', isEdit: false });
+		}
 	}
 
 	render() {
-		console.log('LIBRARY', this.state.library);
 		let userData = this.props.userData;
 		let videoData = this.props.videoData;
 		const { isEdit } = this.state;
 		const { playlist } = this.props;
+		console.log('DATA PROPS PASS !!', playlist);
 		//WAITING FOR LOADED DATA & DISPLAY CARD AFTER CATCH IT
 		// if (isEdit) {
 		// 	return (

@@ -55,100 +55,123 @@ export default class youtube extends Component {
 	}
 
 	//CLICK LOGIN BUTTON, INIT SIGN IN INSTANCE
-	handleAuthClick(event) {
-		const { isLogged, input, userData, isLoaded } = this.state;
-		event.preventDefault();
-		window.gapi.auth2.getAuthInstance().signIn().then(() => {
-			this.loadClient();
+	handleAuthClick = async (e) => {
+		e.preventDefault();
+		try {
+			const res = await window.gapi.auth2.getAuthInstance().signIn();
 			console.log('User connected');
-			window.gapi.client
-				.request({
-					method: 'GET',
-					path: '/youtube/v3/channels',
-					params: {
-						part: 'snippet,contentDetails,statistics,id ',
-						mine: 'true'
-					}
-				})
-				.then((res) => {
-					let userData = res.result.items[0];
-					this.setState({ userData, isLogged: !isLogged });
-					if (this.state.isLogged && userData !== undefined) {
-						console.log('COUCOU');
-						this.getPlaylist();
-					}
-					console.log('myData', userData);
-				})
-				.catch((err) => console.log('get Channel err', err));
-		});
-	}
+			this.loadClient();
+			this.execute();
+		} catch (err) {
+			console.log('Error when try to connect', err);
+		}
+	};
+
+	execute = async () => {
+		const { isLogged, input, userData, isLoaded } = this.state;
+		try {
+			const res = await window.gapi.client.request({
+				method: 'GET',
+				path: '/youtube/v3/channels',
+				params: {
+					part: 'snippet,contentDetails,statistics,id ',
+					mine: 'true'
+				}
+			});
+			let userData = res.result.items[0];
+			this.setState({ userData });
+			console.log('myData', userData);
+			if (userData !== undefined) {
+				this.setState({ isLogged: !isLogged });
+				this.getPlaylist();
+			}
+		} catch (err) {
+			console.log('Get user channel error', err);
+		}
+	};
 
 	//CLICK LOGOUT BUTTON, BREAK THE INSTANCE
-	handleSignoutClick(event) {
-		event.preventDefault();
-		window.gapi.auth2.getAuthInstance().signOut().then(console.log('User disconnected'));
-		this.setState({ isLogged: false });
-	}
+	handleSignoutClick = async (e) => {
+		e.preventDefault();
+		try {
+			const res = window.gapi.auth2.getAuthInstance().signOut();
+			console.log('User disconnected');
+			this.setState({ isLogged: false });
+		} catch (err) {
+			console.log('Error when try to disconnect', err);
+		}
+	};
 
-	//SEARCH FOR VIDEO OR USER
-	getVideos(videos) {
-		let newChanVid = videos.toLowerCase();
-		return window.gapi.client.youtube.search
-			.list({
+	//SEARCH FOR VIDEOS
+
+	getVideos = async (videos) => {
+		const newChanVid = videos.toLowerCase();
+		if (newChanVid === '') {
+			return null;
+		}
+		try {
+			const res = await window.gapi.client.youtube.search.list({
 				part: 'snippet',
 				maxResults: 25,
 				q: newChanVid
-			})
-			.then((res) => {
-				console.log('res', res);
-				let videoData = res.result.items;
-				this.setState({ videoData });
-				console.log('videoData', videoData);
-			})
-			.catch((err) => console.log('No video found', err));
-	}
-
-	getPlaylist(playlist) {
-		playlist = this.state.userData.contentDetails.relatedPlaylists.uploads;
-		if (this.state.isLogged) {
-			return window.gapi.client.youtube.playlistItems
-				.list({
-					part: 'snippet',
-					playlistId: playlist,
-					maxResults: 10
-				})
-				.then((res) => {
-					let newPlaylist = res.result.items;
-					this.setState([ newPlaylist ]);
-					console.log('playlist', newPlaylist);
-				})
-				.catch((err) => console.log("Can't find playlist", err));
+			});
+			console.log('res', res);
+			let videoData = res.result.items;
+			this.setState({ videoData });
+			console.log('videoData', videoData);
+		} catch (err) {
+			console.log('No video found', err);
 		}
-	}
+	};
 
-	handleChange(e) {
+	//USER VIDEO PLAYLIST
+	getPlaylist = async (playlist) => {
+		const { isLoaded } = this.state;
+		playlist = this.state.userData.contentDetails.relatedPlaylists.uploads;
+		try {
+			const res = await window.gapi.client.youtube.playlistItems.list({
+				part: 'snippet',
+				playlistId: playlist,
+				maxResults: 10
+			});
+			console.log('COUCOU');
+			let newPlaylist = res.result.items;
+			this.setState({ newPlaylist });
+			if (newPlaylist) {
+				this.setState({ isLoaded: true });
+				console.log('IsLOADED ?', isLoaded);
+			}
+			console.log('playlist', newPlaylist);
+		} catch (err) {
+			console.log("Can't find playlist", err);
+		}
+	};
+
+	handleChange = async (e) => {
 		const value = e.target.value;
 		e.preventDefault();
-		this.setState({ [e.target.name]: value });
-	}
-	handleSubmit(e) {
+		try {
+			this.setState({ [e.target.name]: value });
+		} catch (err) {
+			console.log('handleChange error', err);
+		}
+	};
+	handleSubmit = async (e) => {
 		e.preventDefault();
 		const { input } = this.state;
-		this.setState({ input });
-		this.getVideos(input);
-		//this.getChannel(input);
+		try {
+			this.setState({ input });
+			this.getVideos(input);
+		} catch (err) {
+			console.log('error when sumbit', err);
+		}
 		console.log('input', input);
-	}
+	};
 
 	render() {
-		const { isLogged, input, userData, videoData, newPlaylist } = this.state;
+		const { isLogged, isLoaded, input, userData, videoData, newPlaylist } = this.state;
 		const { handleSignoutClick, handleAuthClick, handleChange, handleSubmit } = this;
 		console.log('IsLOGGED ?', isLogged);
-		console.log('playlist', newPlaylist);
-
-		if (newPlaylist !== undefined) {
-			return this.getPlaylist();
-		}
 
 		return (
 			<div>
