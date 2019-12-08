@@ -38,6 +38,8 @@ export default class UserDisplay extends Component {
 		const { isEdit } = this.state;
 		const { playlist } = this.props;
 		console.log('DATA PROPS PASS !!', playlist);
+		let display;
+
 		//WAITING FOR LOADED DATA & DISPLAY CARD AFTER CATCH IT
 		// if (isEdit) {
 		// 	return (
@@ -50,6 +52,18 @@ export default class UserDisplay extends Component {
 		// 		{this.state.library}
 		// 	</p>;
 		// }
+		// const displayVid = playlist.map((vid, i) => (
+		// 	<div key={i}>
+		// 		<iframe
+		// 			width="100%"
+		// 			height="auto"
+		// 			src={`https://www.youtube.com/embed/${vid.snippet.resourceId.videoId}`}
+		// 			frameborder="0"
+		// 			allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+		// 			allowfullscreen
+		// 		/>
+		// 	</div>
+		// ));
 
 		return (
 			<div>
@@ -94,6 +108,7 @@ export default class UserDisplay extends Component {
 						</div>
 					</form>
 				</div>
+				{/* {displayVid} */}
 			</div>
 		);
 	}

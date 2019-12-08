@@ -26,33 +26,37 @@ export default class youtube extends Component {
 	}
 
 	//INIT CLIENT CONNEXION
-	initClient() {
-		window.gapi.load('client:auth2', () => {
-			window.gapi.client
-				.init({
+	initClient = async () => {
+		try {
+			const res = window.gapi.load('client:auth2', () => {
+				window.gapi.client.init({
 					clientId: '568890925993-1vgd0a6g7iabongc0l0s6d1jrq14g8ps.apps.googleusercontent.com',
 					discoveryDocs: discoveryDocs,
 					scope: scopes
-				})
-				.then(() => {
-					// SIGN IN INSTANCE
-					window.gapi.auth2.getAuthInstance().isSignedIn.get();
-				})
-				.catch((err) => console.log('ERROR DURING INIT CLIENT', err));
-		});
-	}
+				});
+				// SIGN IN INSTANCE
+				window.gapi.auth2.getAuthInstance().isSignedIn.get();
+			});
+		} catch (err) {
+			console.log('ERROR DURING INIT CLIENT', err);
+		}
+	};
 
-	loadClient() {
-		window.gapi.client.setApiKey(apiKey);
-		return window.gapi.client.load('https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest').then(
-			() => {
-				console.log('GAPI client loaded for API');
-			},
-			(err) => {
-				console.error('Error loading GAPI client for API', err);
-			}
-		);
-	}
+	loadClient = async () => {
+		try {
+			window.gapi.client.setApiKey(apiKey);
+			const res = window.gapi.client.load('https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest').then(
+				() => {
+					console.log('GAPI client loaded for API');
+				},
+				(err) => {
+					console.error('Error loading GAPI client for API', err);
+				}
+			);
+		} catch (err) {
+			console.log('Error when loading user', err);
+		}
+	};
 
 	//CLICK LOGIN BUTTON, INIT SIGN IN INSTANCE
 	handleAuthClick = async (e) => {
@@ -61,13 +65,13 @@ export default class youtube extends Component {
 			const res = await window.gapi.auth2.getAuthInstance().signIn();
 			console.log('User connected');
 			this.loadClient();
-			this.execute();
+			this.logIn();
 		} catch (err) {
 			console.log('Error when try to connect', err);
 		}
 	};
 
-	execute = async () => {
+	logIn = async () => {
 		const { isLogged, input, userData, isLoaded } = this.state;
 		try {
 			const res = await window.gapi.client.request({
@@ -134,14 +138,13 @@ export default class youtube extends Component {
 				playlistId: playlist,
 				maxResults: 10
 			});
-			console.log('COUCOU');
 			let newPlaylist = res.result.items;
-			this.setState({ newPlaylist });
+			this.setState([ newPlaylist ]);
 			if (newPlaylist) {
 				this.setState({ isLoaded: true });
 				console.log('IsLOADED ?', isLoaded);
+				console.log('playlist', newPlaylist);
 			}
-			console.log('playlist', newPlaylist);
 		} catch (err) {
 			console.log("Can't find playlist", err);
 		}
@@ -184,7 +187,7 @@ export default class youtube extends Component {
 							handleChange={handleChange}
 							input={input}
 							handleSubmit={handleSubmit}
-							playlist={newPlaylist}
+							playlist={[ newPlaylist ]}
 						/>
 					</div>
 				) : (
