@@ -47,13 +47,8 @@ export default class UserDisplay extends Component {
             <img src={profilPic} className="card-img-top  rounded-circle" alt="picProfil" />
             {isEdit === true ? (
               <div>
-                <form onSubmit={this.props.handleSubmit}>
-                  <input
-                    className="editInput"
-                    name="input"
-                    value={this.state.input}
-                    onChange={this.props.handleChange}
-                  />
+                <form onSubmit={this.handleSubmit}>
+                  <input className="editInput" name="input" value={this.state.input} onChange={this.handleChange} />
                 </form>
               </div>
             ) : (

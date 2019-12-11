@@ -11,7 +11,6 @@ export default class Dashboard extends Component {
       isLoaded: false,
       input: '',
       videoId: [],
-      myPlaylist: [],
     };
   }
 
