@@ -36,12 +36,9 @@ export default class UserDisplay extends Component {
   render() {
     let userData = this.props.userData;
     let profilPic = this.props.userData.snippet.thumbnails.high.url;
-    const { handleSubmit, handleChange, toggleEditLibrary } = this;
-    const { isEdit, input, library } = this.state;
-    const { playlist, videoData, handleSignoutClick } = this.props;
-    console.log('Video USERDISPLAY ID', playlist);
-    console.log('USERDATA', userData);
-    console.log('profilPIC', profilPic);
+    const { toggleEditLibrary } = this;
+    const { isEdit, library } = this.state;
+    const { playlist, videoData, newPlaylist } = this.props;
 
     return (
       <div>
@@ -78,9 +75,9 @@ export default class UserDisplay extends Component {
               Sign Out{' '}
             </button>
             <br></br>
-            {playlist ? <Video videoId={playlist} videoData={videoData} /> : null}
             <div className="card-body">
               <p className="card-text" />
+              {playlist ? <Video newPlaylist={newPlaylist} videoId={playlist} videoData={videoData} /> : null}
             </div>
           </div>
         </div>

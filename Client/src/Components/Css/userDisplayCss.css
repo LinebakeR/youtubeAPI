@@ -1,42 +1,43 @@
 .card {
-  width: 20%;
-  margin-left: -65%;
-  text-align: center;
+	width: 20%;
+	margin-left: -65%;
+	text-align: center;
 }
 .card-img-top {
-  margin-left: 3%;
+	margin-left: 3%;
 }
 
 .search {
-  margin-top: -15%;
+	margin-top: -15%;
 }
 .input {
-  width: 50%;
-  margin-top: -25%;
+	width: 50%;
+	margin-top: -25%;
 }
 .editInput {
-  width: 100%;
-  margin-left: 5%;
+	width: 100%;
+	margin-left: 5%;
 }
 .myBtn {
-  width: 50%;
-  margin-left: 25%;
+	width: 50%;
+	margin-left: 25%;
 }
 .inputSearch {
-  text-align: center;
-  width: 70%;
-  height: 5%;
-  margin-top: -20%;
-  margin-left: 355%;
+	width: 70%;
+	height: 5%;
+	margin-top: -20%;
+	margin-left: 400%;
 }
 .myBtn1 {
-  margin-left: 10%;
+	margin-left: 10%;
 }
 .displaySearch {
-  margin-left: 215%;
-  margin-top: -250%;
-  display: inline-block;
-  width: 100px;
-  height: 100px;
-  padding: 5px;
+	margin-left: 200%;
+	margin-top: -200%;
+	width: 100px;
+	height: 100px;
+	padding: 5px;
+	display: inline-grid;
+	grid-template-rows: 25vh 25vh 25vh;
+	grid-template-columns: 35vh 35vh 35vh;
 }

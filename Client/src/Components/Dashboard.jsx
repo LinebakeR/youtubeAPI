@@ -11,6 +11,7 @@ export default class Dashboard extends Component {
       isLoaded: false,
       input: '',
       videoId: [],
+      myPlaylist: [],
     };
   }
 
@@ -44,7 +45,8 @@ export default class Dashboard extends Component {
         maxResults: 10,
       });
       let newPlaylist = res.result.items;
-      this.setState([newPlaylist]);
+      this.setState({ newPlaylist });
+      console.log('PLAYLIST', newPlaylist);
       if (newPlaylist) {
         this.setState({ isLoaded: true });
         let videoId = this.state.videoId.slice();
@@ -53,9 +55,9 @@ export default class Dashboard extends Component {
           //this.state.videoId.push(item.snippet.resourceId.videoId)
         });
         this.setState({ videoId: videoId });
-        console.log('VIDEOID', this.state.videoId);
-        console.log('IsLOADED ?', isLoaded);
-        console.log('playlist', newPlaylist);
+        // console.log('VIDEOID', this.state.videoId);
+        // console.log('IsLOADED ?', isLoaded);
+        // console.log('playlist', newPlaylist);
       }
     } catch (err) {
       console.log("Can't find playlist", err);
@@ -77,7 +79,7 @@ export default class Dashboard extends Component {
       console.log('res', res);
       let videoData = res.result.items;
       this.setState({ videoData });
-      console.log('videoData', videoData);
+      //console.log('videoData', videoData);
     } catch (err) {
       console.log('No video found', err);
     }
@@ -101,7 +103,7 @@ export default class Dashboard extends Component {
     } catch (err) {
       console.log('error when sumbit', err);
     }
-    console.log('input', input);
+    // console.log('input', input);
   };
 
   render() {
@@ -122,6 +124,7 @@ export default class Dashboard extends Component {
           input={input}
           handleSubmit={handleSubmit}
           playlist={videoId}
+          newPlaylist={newPlaylist}
         />
       </div>
     );

@@ -7,8 +7,6 @@ export const Video = ({ videoId, videoData }) => {
     return null;
   }
 
-  console.log('VIDEODISPLAY ID ', videoId);
-  console.log('VIDEODATA ID ', videoData);
   return (
     <>
       <div className="displayVid">
@@ -25,20 +23,26 @@ export const Video = ({ videoId, videoData }) => {
         ))}
       </div>
       {videoData && (
-        <div className="col">
-          <form className="displaySearch">
-            {videoData.map((vids, i) => (
-              <iframe
-                key={i}
-                width={'auto'}
-                height={'auto'}
-                src={`${VID_URL}${vids.id.videoId}`}
-                frameBorder="0"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
-            ))}
-          </form>
+        <div className="card-group">
+          <div className="card">
+            <form className="displaySearch">
+              {videoData.map((vids, i) => (
+                <div key={i}>
+                  <iframe
+                    width={'auto'}
+                    height={'auto'}
+                    src={`${VID_URL}${vids.id.videoId}`}
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                  <div>
+                    <i style={{ cursor: 'pointer' }} className="fas fa-plus-circle"></i>
+                  </div>
+                </div>
+              ))}
+            </form>
+          </div>
         </div>
       )}
     </>

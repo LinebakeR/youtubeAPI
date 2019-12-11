@@ -16,6 +16,7 @@ export default class App extends Component {
       isLogged,
     };
   }
+  //CHECK IF USER IS ALWAYS LOGGED & UPDATE STATE USER
   isLogIn = user => {
     this.setState({ isLogged: true, user });
   };
