@@ -1,27 +1,42 @@
 .card {
-	width: 20%;
-	margin-left: -64%;
-	text-align: center;
+  width: 20%;
+  margin-left: -65%;
+  text-align: center;
+}
+.card-img-top {
+  margin-left: 3%;
 }
 
 .search {
-	margin-top: -15%;
+  margin-top: -15%;
 }
 .input {
-	width: 50%;
-	margin-top: -25%;
+  width: 50%;
+  margin-top: -25%;
 }
 .editInput {
-	width: 100%;
-	margin-left: 5%;
+  width: 100%;
+  margin-left: 5%;
 }
 .myBtn {
-	width: 50%;
-	margin-left: 24%;
+  width: 50%;
+  margin-left: 25%;
 }
 .inputSearch {
-	text-align: center;
-	width: 25%;
-	height: 10%;
-	margin-top: -20%;
+  text-align: center;
+  width: 70%;
+  height: 5%;
+  margin-top: -20%;
+  margin-left: 355%;
+}
+.myBtn1 {
+  margin-left: 10%;
+}
+.displaySearch {
+  margin-left: 215%;
+  margin-top: -250%;
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  padding: 5px;
 }
