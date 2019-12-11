@@ -35,20 +35,28 @@ export default class UserDisplay extends Component {
 
   render() {
     let userData = this.props.userData;
+    let profilPic = this.props.userData.snippet.thumbnails.high.url;
     const { handleSubmit, handleChange, toggleEditLibrary } = this;
     const { isEdit, input, library } = this.state;
-    const { playlist, videoData, handleSubmit, handleChange, input, handleSignoutClick } = this.props;
+    const { playlist, videoData, handleSignoutClick } = this.props;
     console.log('Video USERDISPLAY ID', playlist);
+    console.log('USERDATA', userData);
+    console.log('profilPIC', profilPic);
 
     return (
       <div>
         <div className="search">
           <div className="card border-light">
-            <img src={userData.snippet.thumbnails.high.url} className="card-img-top  rounded-circle" alt="picProfil" />
+            <img src={profilPic} className="card-img-top  rounded-circle" alt="picProfil" />
             {isEdit === true ? (
               <div>
-                <form onSubmit={handleSubmit}>
-                  <input className="editInput" name="input" value={input} onChange={handleChange} />
+                <form onSubmit={this.props.handleSubmit}>
+                  <input
+                    className="editInput"
+                    name="input"
+                    value={this.state.input}
+                    onChange={this.props.handleChange}
+                  />
                 </form>
               </div>
             ) : (
@@ -56,16 +64,16 @@ export default class UserDisplay extends Component {
                 {library}
               </p>
             )}
-            <form className="inputSearch" onSubmit={handleSubmit}>
+            <form className="inputSearch" onSubmit={this.props.handleSubmit}>
               <div>
-                <input value={input} onChange={handleChange} name="input" />
+                <input value={this.props.input} onChange={this.props.handleChange} name="input" />
                 <br />
-                <button className="myBtn1 btn-danger" name="submit" onClick={handleSubmit}>
+                <button className="myBtn1 btn-danger" name="submit" onClick={this.props.handleSubmit}>
                   Search Channel
                 </button>
               </div>
             </form>
-            <button className="myBtn btn btn-danger btn-sm" onClick={handleSignoutClick}>
+            <button className="myBtn btn btn-danger btn-sm" onClick={this.props.handleSignoutClick}>
               {' '}
               Sign Out{' '}
             </button>
