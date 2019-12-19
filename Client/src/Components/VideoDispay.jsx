@@ -10,50 +10,6 @@ export class Video extends Component {
     };
   }
 
-  // componentDidMount = async () => {};
-
-  // handleSubmit = async e => {
-  //   const { newPlaylist } = this.props;
-  //   if (!newPlaylist.snippet) {
-  //     return null;
-  //   }
-  //   const title = newPlaylist.snippet.title;
-  //   const thumbnailsHighUrl = newPlaylist.snippet.thumbnails.high.url;
-  //   const thumbnailsMediumUrl = newPlaylist.snippet.thumbnails.medium.url;
-  //   const thumbnailsDefaultUrl = newPlaylist.snippet.thumbnails.default.url;
-
-  //   try {
-  //     const res = await window.gapi.client.youtube.playlists.insert({
-  //       part: 'snippet',
-  //       resource: {
-  //         snippet: {
-  //           title: title,
-  //           thumbnails: {
-  //             high: {
-  //               url: thumbnailsHighUrl,
-  //               height: 360,
-  //               width: 480,
-  //             },
-  //             medium: {
-  //               url: thumbnailsMediumUrl,
-  //               height: 180,
-  //               width: 320,
-  //             },
-  //             default: {
-  //               url: thumbnailsDefaultUrl,
-  //               height: 90,
-  //               width: 120,
-  //             },
-  //           },
-  //         },
-  //       },
-  //     });
-  //     this.setState({ myPlaylist: res });
-  //   } catch (err) {
-  //     console.log("can't add to user playlist", err);
-  //   }
-  // };
-
   render() {
     const { videoId, videoData, newPlaylist } = this.props;
 

@@ -14,21 +14,40 @@ export default class App extends Component {
     this.state = {
       user,
       isLogged,
+      alerts: [],
     };
   }
   //CHECK IF USER IS ALWAYS LOGGED & UPDATE STATE USER
   isLogIn = user => {
     this.setState({ isLogged: true, user });
   };
+
+  //DISCONNECT USER FROM APP
+  isLogOut = async () => {
+    this.setState({ alerts: [] });
+    await window.gapi.auth2.getAuthInstance().signOut();
+    this.setState({
+      isLogged: false,
+      alerts: "You've been disconnected",
+    });
+  };
+
   render() {
-    const { isLogged, user } = this.state;
+    const { isLogged, user, alerts } = this.state;
     return (
       <>
         <Navbar />
         <Router>
           <Switch>
-            <Route path="/dashboard" render={props => <Dashboard {...props} user={user} isLogged={isLogged} />} />
-            <Route exact path="/" render={props => <Login {...props} isLogged={isLogged} isLogIn={this.isLogIn} />} />
+            <Route
+              path="/dashboard"
+              render={props => <Dashboard {...props} user={user} isLogged={isLogged} isLogOut={this.isLogOut} />}
+            />
+            <Route
+              exact
+              path="/"
+              render={props => <Login {...props} isLogged={isLogged} isLogIn={this.isLogIn} alerts={alerts} />}
+            />
           </Switch>
         </Router>
       </>

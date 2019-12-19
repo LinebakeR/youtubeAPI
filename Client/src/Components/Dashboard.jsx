@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UserDisplay from './UserDisplay';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -22,12 +22,12 @@ export default class Dashboard extends Component {
   }
 
   //CLICK LOGOUT BUTTON, BREAK THE INSTANCE
-  handleSignoutClick = async () => {
-    const { isLogged } = this.state;
+  handleSignoutClick = async message => {
+    const { isLogOut } = this.props;
+    message = "You've been disconnected";
     try {
-      await window.gapi.auth2.getAuthInstance().signOut();
+      isLogOut();
       console.log('User disconnected');
-      this.setState({ isLogged: false });
     } catch (err) {
       console.log('Error when try to disconnect', err);
     }
@@ -106,7 +106,7 @@ export default class Dashboard extends Component {
   };
 
   render() {
-    const { isLogged, user } = this.props;
+    const { user, isLogged, alerts } = this.props;
     const { input, videoData, newPlaylist, videoId } = this.state;
     const { handleSignoutClick, handleChange, handleSubmit, getPlaylist } = this;
     console.log('IsLOGGED ?', isLogged);

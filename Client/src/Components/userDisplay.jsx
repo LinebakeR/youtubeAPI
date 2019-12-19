@@ -34,7 +34,6 @@ export default class UserDisplay extends Component {
   };
 
   render() {
-    let userData = this.props.userData;
     let profilPic = this.props.userData.snippet.thumbnails.high.url;
     const { toggleEditLibrary } = this;
     const { isEdit, library } = this.state;
@@ -66,8 +65,7 @@ export default class UserDisplay extends Component {
               </div>
             </form>
             <button className="myBtn btn btn-danger btn-sm" onClick={this.props.handleSignoutClick}>
-              {' '}
-              Sign Out{' '}
+              Sign Out
             </button>
             <br></br>
             <div className="card-body">

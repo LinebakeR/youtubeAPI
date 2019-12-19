@@ -5,6 +5,7 @@ import './App.css';
 import './Components/Css/userDisplayCss.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
+import { Redirect, Link } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import { getUser, initClient, loadClient } from './apiConnect';
 
@@ -15,10 +16,13 @@ import { getUser, initClient, loadClient } from './apiConnect';
     await initClient();
 
     let isLogged = window.gapi.auth2.getAuthInstance().isSignedIn.get();
+
     let user = null;
     if (isLogged) {
       user = await getUser();
+      console.log('IS LOG', isLogged);
     }
+
     ReactDOM.render(<App isLogged={isLogged} user={user || null} />, document.getElementById('root'));
   } catch (err) {
     console.log(err);
